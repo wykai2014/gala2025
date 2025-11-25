@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HUD Terminal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- 核心配色与变量 (HUD) --- */
+        :root {
+            --bg-color: #000000;
+            --hud-color: #ff9900; /* 电光橙强调色 */
+            --light-color: #a0a0a0; /* 次要文本颜色 */
+            --dark-block: rgba(0, 0, 0, 0.75);
+            
+            /* 新增 Gemini 专用颜色 */
+            --gemini-color: #39ff14; 
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Consolas', 'Courier New', monospace; 
+            background-color: var(--bg-color);
+            color: var(--hud-color);
+            overflow: hidden;
+            /* 模拟屏幕噪点和扫描线 */
+            background-image: linear-gradient(rgba(0,0,0,0) 50%, rgba(255,255,255,0.02) 50%), 
+                              linear-gradient(90deg, rgba(0,0,0,0) 50%, rgba(255,255,255,0.01) 50%);
+            background-size: 100% 4px, 4px 100%;
+        }
+
+        /* --- 主容器 (数据块) --- */
+        .container {
+            background: var(--dark-block);
+            border: 1px solid var(--hud-color);
+            box-shadow: 0 0 10px var(--hud-color), inset 0 0 5px var(--hud-color);
+            padding: 40px;
+            width: 95%;
+            max-width: 800px;
+            text-align: center;
+            animation: bootUp 1s ease-out;
+        }
+
+        @keyframes bootUp {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        h1 {
+            font-weight: 400;
+            letter-spacing: 5px;
+            margin-bottom: 30px;
+            font-size: 36px;
+            text-transform: uppercase;
+        }
+
+        /* --- 引擎切换 Tabs --- */
+        .search-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 5px; 
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid var(--hud-color);
+            color: var(--hud-color);
+            padding: 8px 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            min-width: 100px;
+            text-transform: uppercase;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 153, 0, 0.1);
+        }
+
+        .tab-btn.active {
+            background: var(--hud-color);
+            color: var(--bg-color);
+            box-shadow: 0 0 15px rgba(255, 153, 0, 0.8);
+        }
+
+        /* --- 搜索框 (数据输入) --- */
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 50px auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 18px 20px 18px 55px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--light-color);
+            color: var(--hud-color);
+            font-size: 18px;
+            outline: none;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+
+        .search-input:focus {
+            border-color: var(--hud-color);
+            box-shadow: 0 0 10px rgba(255, 153, 0, 0.5);
+        }
+
+        .search-icon {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            color: var(--light-color);
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+        
+        .search-input:focus + .search-icon {
+            color: var(--hud-color);
+        }
+
+        /* --- 图标链接区域 (GRID 布局) --- */
+        .links-area {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); 
+            gap: 20px;
+            width: 100%;
+            max-width: 700px;
+            margin: auto;
+        }
+
+        .link-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--light-color);
+            width: 100%;
+            aspect-ratio: 1 / 1; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: var(--hud-color);
+            transition: all 0.2s ease-out;
+            position: relative;
+            overflow: hidden;
+            /* HUD角标 */
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 0);
+        }
+
+        .link-card i {
+            font-size: 35px;
+            margin-bottom: 8px;
+            color: var(--icon-color, var(--hud-color));
+            transition: all 0.2s;
+        }
+
+        .link-card span {
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--light-color);
+        }
+
+        /* 悬停特效 */
+        .link-card:hover {
+            background: rgba(255, 153, 0, 0.15);
+            border-color: var(--hover-color, var(--hud-color));
+            box-shadow: 0 0 15px var(--hover-color, var(--hud-color));
+        }
+
+        .link-card:hover i {
+            color: var(--hover-color, var(--hud-color));
+        }
+        
+        /* 品牌颜色定义 */
+        .card-bili { --icon-color: #fb7299; --hover-color: #fb7299; }
+        .card-x { --icon-color: #ffffff; --hover-color: #ffffff; }
+        .card-jab { --icon-color: #ff3d00; --hover-color: #ff3d00; }
+        .card-gmail { --icon-color: #EA4335; --hover-color: #EA4335; }
+        .card-custom { --icon-color: #999; --hover-color: #999; }
+        
+        /* GEMINI 专用颜色：电光绿 */
+        .card-gemini { --icon-color: var(--gemini-color); --hover-color: var(--gemini-color); }
+
+        /* --- 小屏幕适配 --- */
+        @media (max-width: 700px) {
+            .container { padding: 30px 20px; }
+            .links-area {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>[ SYSTEM: DATA SHELL ACTIVE ]</h1>
+
+        <div class="search-tabs">
+            <button class="tab-btn active" onclick="switchEngine('google')" id="btn-google">GOOGLE</button>
+            <button class="tab-btn" onclick="switchEngine('baidu')" id="btn-baidu">BAIDU</button>
+        </div>
+
+        <form id="search-form" action="https://www.google.com/search" method="get" target="_blank" class="search-box">
+            <input type="text" id="search-input" name="q" class="search-input" placeholder=">> ENTER QUERY..." autocomplete="off">
+            <i class="fas fa-search search-icon"></i>
+        </form>
+
+        <div class="links-area">
+            <a href="https://www.bilibili.com" target="_blank" class="link-card card-bili">
+                <i class="fa-brands fa-bilibili"></i>
+                <span>BILIBILI</span>
+            </a>
+            
+            <a href="https://twitter.com" target="_blank" class="link-card card-x">
+                <i class="fa-brands fa-x-twitter"></i>
+                <span>X / TWITTER</span>
+            </a>
+
+            <a href="https://jable.tv/hot/" target="_blank" class="link-card card-jab">
+                <i class="fas fa-satellite-dish"></i>
+                <span>JABTV HOT</span>
+            </a>
+
+            <a href="https://mail.google.com" target="_blank" class="link-card card-gmail">
+                <i class="fas fa-envelope"></i>
+                <span>GMAIL</span>
+            </a>
+            
+            <a href="https://gemini.google.com" target="_blank" class="link-card card-gemini">
+                <i class="fas fa-microchip"></i>
+                <span>GEMINI AI</span>
+            </a>
+
+            <a href="#" class="link-card card-custom">
+                <i class="fas fa-terminal"></i>
+                <span>CUSTOM SLOT</span>
+            </a>
+
+        </div>
+    </div>
+
+    <script>
+        // 预设引擎配置
+        const engines = {
+            google: {
+                action: "https://www.google.com/search",
+                name: "q",
+                placeholder: ">> GOOGLE::SEARCH...",
+            },
+            baidu: {
+                action: "https://www.baidu.com/s",
+                name: "wd",
+                placeholder: ">> BAIDU::SEARCH...",
+            }
+        };
+        
+        function switchEngine(engineName) {
+            const config = engines[engineName];
+
+            // 1. 修改表单的提交地址
+            document.getElementById('search-form').action = config.action;
+            
+            // 2. 修改输入框参数名和提示
+            const input = document.getElementById('search-input');
+            input.name = config.name;
+            input.placeholder = config.placeholder;
+            
+            // 3. 切换按钮样式
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('btn-' + engineName).classList.add('active');
+
+            input.focus();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初始化为 Google
+            switchEngine('google'); 
+        });
+    </script>
+
+</body>
+</html>
