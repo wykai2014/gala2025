@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HUD Terminal</title>
+    <title>我的优雅主页</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- 核心配色与变量 (HUD) --- */
+        /* --- 核心配色与变量 --- */
         :root {
-            --bg-color: #000000;
-            --hud-color: #ff9900; /* 电光橙强调色 */
-            --light-color: #a0a0a0; /* 次要文本颜色 */
-            --dark-block: rgba(0, 0, 0, 0.75);
+            --primary-bg-color: #0c0c0c; /* 深灰色背景，用于内容卡片 */
+            --text-color: #ffffff;
+            --accent-color: #e0b0ff; /* 柔和的紫罗兰色强调 */
+            --border-color: rgba(255, 255, 255, 0.15);
+            --shadow-color: rgba(0, 0, 0, 0.5);
             
             /* Gemini 专用颜色 */
-            --gemini-color: #39ff14; 
+            --gemini-color: #a8c7fa; 
         }
 
         body {
@@ -23,94 +24,119 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Consolas', 'Courier New', monospace; 
-            background-color: var(--bg-color);
-            color: var(--hud-color);
+            font-family: 'Roboto', sans-serif; /* 现代优雅字体 */
+            color: var(--text-color);
             overflow: hidden;
-            /* 模拟屏幕噪点和扫描线 */
-            background-image: linear-gradient(rgba(0,0,0,0) 50%, rgba(255,255,255,0.02) 50%), 
-                              linear-gradient(90deg, rgba(0,0,0,0) 50%, rgba(255,255,255,0.01) 50%);
-            background-size: 100% 4px, 4px 100%;
+
+            /* --- 美女背景图片 --- */
+            background-image: url('https://images.unsplash.com/photo-1627885744926-285641151662?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); /* Unsplash 图片链接 */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            
+            /* 背景模糊和暗化处理 */
+            filter: blur(5px) brightness(0.7); /* 模糊背景并使其变暗 */
+            -webkit-filter: blur(5px) brightness(0.7);
+            transform: scale(1.02); /* 稍微放大以避免模糊边缘 */
         }
 
-        /* --- 主容器 (数据块) --- */
+        /* 覆盖 body 的滤镜，使内容清晰 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.3); /* 额外覆盖一层半透明黑色，增强内容可读性 */
+            z-index: -1; /* 确保在内容之下 */
+        }
+
+        /* --- 主容器 (半透明卡片) --- */
         .container {
-            background: var(--dark-block);
-            border: 1px solid var(--hud-color);
-            box-shadow: 0 0 10px var(--hud-color), inset 0 0 5px var(--hud-color);
+            background: rgba(18, 18, 18, 0.7); /* 半透明的深灰色 */
+            border: 1px solid var(--border-color);
+            border-radius: 15px; /* 柔和的圆角 */
             padding: 40px;
-            width: 95%;
-            max-width: 800px;
+            width: 90%;
+            max-width: 700px;
             text-align: center;
-            animation: bootUp 1s ease-out;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            /* 入场动画 */
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInScaleUp 0.8s ease forwards;
+            z-index: 1; /* 确保在背景图片之上 */
         }
 
-        @keyframes bootUp {
-            0% { opacity: 0; transform: scale(0.95); }
-            100% { opacity: 1; transform: scale(1); }
+        @keyframes fadeInScaleUp {
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h1 {
-            font-weight: 400;
-            letter-spacing: 5px;
+            font-weight: 300;
+            letter-spacing: 1px;
             margin-bottom: 30px;
-            font-size: 36px;
-            text-transform: uppercase;
+            font-size: 38px;
+            color: var(--accent-color); /* 标题使用强调色 */
+            text-shadow: 0 0 8px rgba(224, 176, 255, 0.5); /* 柔和的光晕 */
         }
 
         /* --- 引擎切换 Tabs --- */
         .search-tabs {
             display: flex;
             justify-content: center;
-            gap: 5px; 
-            margin-bottom: 25px;
+            gap: 10px; 
+            margin-bottom: 30px;
         }
 
         .tab-btn {
-            background: transparent;
-            border: 1px solid var(--hud-color);
-            color: var(--hud-color);
-            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            padding: 10px 22px;
+            border-radius: 8px; /* 柔和的圆角按钮 */
             cursor: pointer;
-            transition: all 0.2s;
-            font-size: 14px;
+            transition: all 0.3s ease;
+            font-size: 15px;
             min-width: 100px;
-            text-transform: uppercase;
         }
 
         .tab-btn:hover {
-            background: rgba(255, 153, 0, 0.1);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
         }
 
         .tab-btn.active {
-            background: var(--hud-color);
-            color: var(--bg-color);
-            box-shadow: 0 0 15px rgba(255, 153, 0, 0.8);
+            background: var(--accent-color);
+            color: var(--primary-bg-color);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(224, 176, 255, 0.7);
         }
 
-        /* --- 搜索框 (数据输入) --- */
+        /* --- 搜索框 --- */
         .search-box {
             position: relative;
             width: 100%;
-            max-width: 600px;
+            max-width: 550px;
             margin: 0 auto 50px auto;
         }
 
         .search-input {
             width: 100%;
             padding: 18px 20px 18px 55px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--light-color);
-            color: var(--hud-color);
-            font-size: 18px;
+            background: rgba(0, 0, 0, 0.3); /* 半透明黑 */
+            border: 1px solid var(--border-color);
+            border-radius: 30px; /* 圆润搜索框 */
+            color: var(--text-color);
+            font-size: 17px;
             outline: none;
-            transition: border-color 0.3s;
+            transition: all 0.3s ease;
             box-sizing: border-box;
         }
 
         .search-input:focus {
-            border-color: var(--hud-color);
-            box-shadow: 0 0 10px rgba(255, 153, 0, 0.5);
+            background: rgba(0, 0, 0, 0.5);
+            border-color: var(--accent-color);
+            box-shadow: 0 0 15px rgba(224, 176, 255, 0.5);
         }
 
         .search-icon {
@@ -118,28 +144,29 @@
             top: 50%;
             left: 20px;
             transform: translateY(-50%);
-            color: var(--light-color);
+            color: rgba(255, 255, 255, 0.5);
             font-size: 20px;
             transition: color 0.3s;
         }
         
         .search-input:focus + .search-icon {
-            color: var(--hud-color);
+            color: var(--accent-color);
         }
 
         /* --- 图标链接区域 (GRID 布局) --- */
         .links-area {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); 
-            gap: 20px;
+            gap: 25px;
             width: 100%;
-            max-width: 700px;
+            max-width: 650px;
             margin: auto;
         }
 
         .link-card {
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--light-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px; /* 圆角卡片 */
             width: 100%;
             aspect-ratio: 1 / 1; 
             display: flex;
@@ -147,37 +174,35 @@
             justify-content: center;
             align-items: center;
             text-decoration: none;
-            color: var(--hud-color);
-            transition: all 0.2s ease-out;
-            position: relative;
-            overflow: hidden;
-            /* HUD角标 */
-            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 0);
+            color: var(--text-color);
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1.1); /* 弹性动画 */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
         .link-card i {
-            font-size: 35px;
-            margin-bottom: 8px;
-            color: var(--icon-color, var(--hud-color));
-            transition: all 0.2s;
+            font-size: 38px;
+            margin-bottom: 10px;
+            color: var(--icon-color, var(--text-color));
+            transition: transform 0.3s;
         }
 
         .link-card span {
-            font-size: 12px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--light-color);
+            font-size: 13px;
+            letter-spacing: 0.5px;
+            font-weight: 500;
         }
 
         /* 悬停特效 */
         .link-card:hover {
-            background: rgba(255, 153, 0, 0.15);
-            border-color: var(--hover-color, var(--hud-color));
-            box-shadow: 0 0 15px var(--hover-color, var(--hud-color));
+            transform: translateY(-8px) scale(1.05); /* 上浮并轻微放大 */
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--hover-color, var(--accent-color));
+            box-shadow: 0 12px 25px rgba(0,0,0,0.4);
         }
 
         .link-card:hover i {
-            color: var(--hover-color, var(--hud-color));
+            color: var(--hover-color, var(--accent-color));
+            transform: scale(1.1);
         }
         
         /* 品牌颜色定义 */
@@ -186,79 +211,64 @@
         .card-gmail { --icon-color: #EA4335; --hover-color: #EA4335; }
         .card-custom { --icon-color: #999; --hover-color: #999; }
         
-        /* GEMINI 专用颜色：电光绿 */
+        /* GEMINI 专用颜色 */
         .card-gemini { --icon-color: var(--gemini-color); --hover-color: var(--gemini-color); }
 
         /* --- 小屏幕适配 --- */
-        @media (max-width: 700px) {
+        @media (max-width: 768px) {
             .container { padding: 30px 20px; }
+            h1 { font-size: 30px; }
             .links-area {
                 grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 480px) {
+            .links-area {
+                grid-template-columns: repeat(1, 1fr);
+                max-width: 200px; /* 确保单列时居中 */
             }
         }
 
     </style>
 </head>
 <body>
-
-    <script>
-        // 【已设置密码：777777】
-        const CORRECT_PASSWORD = "777777"; 
-
-        // 提示用户输入密码
-        let enteredPassword = prompt("SYSTEM::AUTHENTICATION_REQUIRED\n\n>> ENTER PASSWORD:");
-
-        // 检查密码是否正确
-        if (enteredPassword !== CORRECT_PASSWORD) {
-            // 如果密码不正确，显示拒绝访问信息并清空页面内容
-            alert("ACCESS DENIED: Incorrect credentials. Closing terminal.");
-            
-            // 清空页面内容，只显示拒绝信息
-            document.body.innerHTML = "<h1>ACCESS DENIED</h1>"; 
-            document.body.style.backgroundColor = '#100000'; // 红色调的黑底
-            document.body.style.color = 'red';
-            document.body.style.display = 'flex';
-            document.body.style.alignItems = 'center';
-            document.body.style.justifyContent = 'center';
-        }
-    </script> 
     <div class="container">
-        <h1>[ SYSTEM: DATA SHELL ACTIVE ]</h1>
+        <h1>Welcome.</h1>
 
         <div class="search-tabs">
-            <button class="tab-btn active" onclick="switchEngine('google')" id="btn-google">GOOGLE</button>
-            <button class="tab-btn" onclick="switchEngine('baidu')" id="btn-baidu">BAIDU</button>
+            <button class="tab-btn active" onclick="switchEngine('google')" id="btn-google">Google</button>
+            <button class="tab-btn" onclick="switchEngine('baidu')" id="btn-baidu">Baidu</button>
         </div>
 
         <form id="search-form" action="https://www.google.com/search" method="get" target="_blank" class="search-box">
-            <input type="text" id="search-input" name="q" class="search-input" placeholder=">> ENTER QUERY..." autocomplete="off">
+            <input type="text" id="search-input" name="q" class="search-input" placeholder="Search the web..." autocomplete="off">
             <i class="fas fa-search search-icon"></i>
         </form>
 
         <div class="links-area">
             <a href="https://www.bilibili.com" target="_blank" class="link-card card-bili">
                 <i class="fa-brands fa-bilibili"></i>
-                <span>BILIBILI</span>
+                <span>Bilibili</span>
             </a>
             
             <a href="https://twitter.com" target="_blank" class="link-card card-x">
                 <i class="fa-brands fa-x-twitter"></i>
-                <span>X / TWITTER</span>
+                <span>X / Twitter</span>
             </a>
 
             <a href="https://mail.google.com" target="_blank" class="link-card card-gmail">
                 <i class="fas fa-envelope"></i>
-                <span>GMAIL</span>
+                <span>Gmail</span>
             </a>
             
             <a href="https://gemini.google.com" target="_blank" class="link-card card-gemini">
                 <i class="fas fa-microchip"></i>
-                <span>GEMINI AI</span>
+                <span>Gemini AI</span>
             </a>
 
             <a href="#" class="link-card card-custom">
-                <i class="fas fa-terminal"></i>
-                <span>CUSTOM SLOT</span>
+                <i class="fas fa-plus-circle"></i>
+                <span>Custom Slot</span>
             </a>
 
         </div>
@@ -270,12 +280,12 @@
             google: {
                 action: "https://www.google.com/search",
                 name: "q",
-                placeholder: ">> GOOGLE::SEARCH...",
+                placeholder: "Search Google...",
             },
             baidu: {
                 action: "https://www.baidu.com/s",
                 name: "wd",
-                placeholder: ">> BAIDU::SEARCH...",
+                placeholder: "百度一下...",
             }
         };
         
