@@ -34,10 +34,10 @@
             background-position: center;
             background-attachment: fixed;
             
-            /* **【修改点】** 显著减少模糊度 (5px -> 1px)，并提高亮度 (0.7 -> 0.9) */
-            filter: blur(1px) brightness(0.9); 
-            -webkit-filter: blur(1px) brightness(0.9);
-            transform: scale(1.02); 
+            /* **【修改点】** 移除模糊，只进行轻微暗化 */
+            filter: brightness(0.85); /* 仅轻微调暗，提高高清度 */
+            -webkit-filter: brightness(0.85);
+            transform: scale(1.0); 
         }
 
         /* 覆盖 body 的滤镜，使内容清晰 */
@@ -45,7 +45,7 @@
             content: '';
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: rgba(0, 0, 0, 0.3); /* 保持半透明黑色覆盖，确保内容可读性 */
+            background-color: rgba(0, 0, 0, 0.4); /* 增加半透明黑色的透明度，确保高清背景下的内容可读性 */
             z-index: -1; 
         }
 
