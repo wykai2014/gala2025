@@ -29,13 +29,13 @@
             overflow: hidden;
 
             /* --- 美女背景图片 --- */
-            background-image: url('https://i0.hdslb.com/bfs/article/5c165b17c127a2a283b481a79dbd7ee7286431045.jpg'); 
+            background-image: url('https://images.unsplash.com/photo-1627885744926-285641151662?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'); 
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             
-            /* **【修改点】** 移除模糊，只进行轻微暗化 */
-            filter: brightness(0.85); /* 仅轻微调暗，提高高清度 */
+            /* 无模糊，仅轻微调暗 */
+            filter: brightness(0.85); 
             -webkit-filter: brightness(0.85);
             transform: scale(1.0); 
         }
@@ -209,10 +209,10 @@
         .card-bili { --icon-color: #fb7299; --hover-color: #fb7299; }
         .card-x { --icon-color: #ffffff; --hover-color: #ffffff; }
         .card-gmail { --icon-color: #EA4335; --hover-color: #EA4335; }
-        .card-custom { --icon-color: #999; --hover-color: #999; }
-        
-        /* GEMINI 专用颜色 */
         .card-gemini { --icon-color: var(--gemini-color); --hover-color: var(--gemini-color); }
+        
+        /* **【新增 GitHub 样式】** */
+        .card-github { --icon-color: #f0f0f0; --hover-color: #ffffff; }
 
         /* --- 小屏幕适配 --- */
         @media (max-width: 768px) {
@@ -265,10 +265,10 @@
                 <i class="fas fa-microchip"></i>
                 <span>Gemini AI</span>
             </a>
-
-            <a href="#" class="link-card card-custom">
-                <i class="fas fa-plus-circle"></i>
-                <span>Custom Slot</span>
+            
+            <a href="https://github.com/wykai2014/gala2025" target="_blank" class="link-card card-github">
+                <i class="fa-brands fa-github"></i>
+                <span>GALA 2025</span>
             </a>
 
         </div>
@@ -315,6 +315,3 @@
 
 </body>
 </html>
-
-
-
